@@ -1,1 +1,88 @@
+# AIOptic
 
+**See every token. Control every dollar.**
+
+AIOptic is the central AI operations and cost management platform — the
+"Datadog + Vercel + Stripe Dashboard" for AI infrastructure. It gives CTOs, AI
+engineers, platform engineers, and finance teams complete visibility into AI
+costs, usage, governance, and infrastructure across every cloud (AWS, Azure,
+GCP) and every LLM provider (OpenAI, Anthropic, Gemini, Grok, Cohere, Mistral,
+Together AI, OpenRouter, Ollama, and self-hosted open-source models).
+
+## Branding
+
+| Element    | Direction |
+|------------|-----------|
+| Name       | **AIOptic** — "AI" + "optic" (lens/visibility). Short, pronounceable, .dev/.ai domains have strong availability potential. |
+| Tagline    | *See every token. Control every dollar.* |
+| Colors     | Near-black base `#07070B`, indigo `#6366F1` → violet `#8B5CF6` gradient accents, cyan `#22D3EE` data accent, emerald `#34D399` for savings/health. |
+| Typography | Geist Sans (UI/headings), Geist Mono (numbers, code, telemetry). |
+| Logo style | Aperture/lens mark (currently Lucide `Aperture`) in indigo — geometric, minimal, works at 16px favicon scale. |
+| Aesthetic  | Dark-mode-first, glassmorphism, aurora gradients, subtle micro-interactions — Linear/Vercel/Stripe-class polish. |
+
+## Quick start
+
+```bash
+cd web
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # production build
+npm run lint
+```
+
+Requires Node.js 18.18+.
+
+## Tech stack
+
+Next.js 14 (App Router) · React 18 · TypeScript · Tailwind CSS · Framer Motion
+· Lucide Icons · Geist fonts. All animation respects `prefers-reduced-motion`.
+
+## Frontend architecture & folder structure
+
+```
+web/
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx            # Root layout, fonts, SEO metadata (OG/Twitter)
+│   │   ├── page.tsx              # Landing page (assembles all sections)
+│   │   ├── globals.css           # Design tokens, glass/aurora/chart keyframes
+│   │   ├── sitemap.ts            # SEO sitemap
+│   │   ├── robots.ts             # SEO robots
+│   │   └── dashboard/page.tsx    # Interactive SaaS dashboard demo
+│   ├── components/
+│   │   ├── motion.tsx            # FadeIn / Stagger / Float animation primitives
+│   │   ├── navbar.tsx            # Glass sticky nav + mobile menu
+│   │   ├── hero.tsx              # Animated hero with floating stat cards
+│   │   ├── sections.tsx          # TrustedBy, Product, Features, Integrations,
+│   │   │                         #   SelfHosted, Security
+│   │   ├── dashboard-preview.tsx # Landing-page live dashboard section
+│   │   ├── charts.tsx            # Animated SVG charts, counters, bars
+│   │   ├── pricing-faq.tsx       # Pricing, Testimonials, FAQ, Contact, Footer
+│   │   └── dashboard-app.tsx     # Full dashboard shell (sidebar, table, alerts)
+│   └── lib/utils.ts              # cn() class merge helper
+```
+
+Server components by default; `"use client"` only where interactivity/animation
+requires it, keeping First Load JS at ~156 kB for the landing page.
+
+## Hosting (free tiers)
+
+1. **Vercel** (recommended) — zero-config Next.js, preview deployments, edge
+   network, analytics. Connect the repo, set root directory to `web/`.
+2. **Cloudflare Pages** — generous free tier, use `@cloudflare/next-on-pages`.
+3. **Netlify** — solid alternative with the official Next.js runtime.
+
+## Scalable backend architecture (future)
+
+- **Gateway**: lightweight LLM proxy (Go/Rust) in the request path for
+  real-time token/cost capture; <5ms overhead; deployable in customer VPC.
+- **Ingestion**: events → Kafka/Redpanda → stream processor → ClickHouse
+  (usage analytics) + Postgres (tenants, teams, budgets, RBAC).
+- **Billing integrations**: scheduled pollers for AWS CUR, Azure Cost
+  Management, GCP Billing export, and provider usage APIs.
+- **Forecasting**: Python service (Prophet/ML) reading ClickHouse aggregates.
+- **API layer**: tRPC/GraphQL over Node or Go, multi-tenant with row-level
+  security; SSO via WorkOS/Auth0.
+- **Self-hosted agent**: Helm-deployed collector (OpenTelemetry-based)
+  streaming GPU/inference telemetry; air-gapped mode buffers locally.
+- **Alerts**: rules engine → Slack/PagerDuty/email via queue workers.
